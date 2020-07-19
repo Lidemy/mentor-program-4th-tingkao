@@ -11,7 +11,7 @@ function printBookList(n) {
 function deleteBook(n) {
   request.delete(`https://lidemy-book-store.herokuapp.com/books/${n}`,
     (error, response) => {
-      if (response.statusCode === 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         console.log(`成功刪除書籍，id: ${n}`);
       } else {
         console.log('無此書籍！');
@@ -21,7 +21,7 @@ function deleteBook(n) {
 function addBook(n) {
   request.post('https://lidemy-book-store.herokuapp.com/books', { form: { name: n } },
     (error, response) => {
-      if (response.statusCode === 201) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         console.log(`成功新增書籍：${n}`);
       }
     });
@@ -35,7 +35,7 @@ function updateBook(newId, newName) {
   request.patch(`https://lidemy-book-store.herokuapp.com/books/${newId}`,
     { form: { name: newName } },
     (error, response) => {
-      if (response.statusCode === 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         console.log(`成功更改 ID:${newId} 的書籍名稱為 "${newName}"`);
       } else {
         console.log('請確認書籍 ID');

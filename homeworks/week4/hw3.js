@@ -7,7 +7,7 @@ function search(key) {
   request(`https://restcountries.eu/rest/v2/name/${key}`,
     (error, response, body) => {
       const List = JSON.parse(body);
-      if (response.statusCode === 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         let result = '';
         for (let i = 0; i < List.length; i += 1) {
           result = `${result}
