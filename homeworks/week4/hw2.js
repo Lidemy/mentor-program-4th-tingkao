@@ -53,7 +53,7 @@ if (process.argv[2] === 'read') {
   if (process.argv[3]) {
     printBookList(`/${process.argv[3]}`);
   } else {
-    console.log('查無此書');
+    console.log('請輸入有效參數');
   }
 }
 
@@ -62,7 +62,7 @@ if (process.argv[2] === 'delete') {
   if (process.argv[3]) {
     deleteBook(`${process.argv[3]}`);
   } else {
-    console.log('查無此書');
+    console.log('請輸入有效參數');
   }
 }
 
