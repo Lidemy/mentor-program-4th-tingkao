@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>報名表單</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="list__intro">
+      <h1>新拖延運動報名表單</h1>
+      <p>活動日期：2020/12/10 ~ 2020/12/11</p>
+      <p>活動地點：台北市大安區新生南路二段1號</p>
+      <span>*必填</span>
+    </div>
+    <div class="list__content">
+      <label for="nickname" class="nickname">暱稱</label>
+      <input type="text" id="nickname" placeholder= "您的回答">
+      <label for="eMail" class="eMail">電子郵件</label>
+      <input type="email" id="eMail" placeholder= "您的電子郵件">
+      <label for="phoneNum" class="phoneNum">手機號碼</label>
+      <input type="text" id="phoneNum" placeholder= "您的手機號碼">
+      <label for="gameType" class="gameType">報名類型</label>
+      
+      <div class="mutichoice">
+          <input type="radio" id="gameType01" name="gameType">
+          <label for="gameType01" class="gameType">躺在床上用想像力實作</label>
+          <div class="clean"></div>
+          <input type="radio" id="gameType02" name="gameType">
+          <label for="gameType02" class="gameType">趴在地上滑手機找現成的</label>
+      </div>
+
+      <label for="gameType" class="gameType">怎麼知道這個活動的？</label>
+      <input type="text" id="phoneNum" placeholder= "您的回答">
+      <label for="gameType" class="other">其他</label>
+      <p>對活動的一些建議</p>
+      <input type="text" id="phoneNum" placeholder= "您的回答">
+
+      <input class="list__submit" type="submit" value="提交">
+      <p class="list__warning">請勿透過表單送出您的密碼</p>
+      
+    </div>
+  </div>
+  <footer>
+    <p>© 2020 © Copyright. All rights Reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+body {
+  background-color: #ddd;
+}
+.wrap {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 55px 55px;
+  box-shadow: 0px 0px 10px #bbb;
+  background-color: #fff;
+  border-top: 8px solid #fad312;
+}
+.list__intro p {
+  margin: 5px auto;
+}
+.list__intro span {
+  display: inline-block;
+  margin-top: 10px;
+  color: red;
+}
+.list__content {
+  margin-top: 40px;
+  font-size: 20px;
+}
+.list__content > label {
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.list__content > label:not(.other):after {
+  content: "*";
+  color: red;
+  margin-left: 10px;
+}
+.list__content > input {
+  width: 300px;
+  margin-bottom: 40px;
+  font-size: 14px;
+  padding: 5px 5px;
+}
+.list__content > input, .list__content > input {
+  display: block;
+}
+.mutichoice {
+  font-size: 0;
+  margin-bottom: 40px;
+  /* height: 100px; */
+  /* vertical-align: middle; */
+}
+.mutichoice label {
+  display: inline-block;
+  font-size: 14px;
+  
+}
+.mutichoice input {
+  height: 10px;
+  display: inline-block;
+  margin-right: 5px;
+}
+.clean {
+  width: 100%;
+  margin: 5px;
+}
+.list__content p {
+  font-size: 14px;
+  margin-top: -15px;
+  margin-bottom: 25px;
+}
+input.list__submit {
+  display: inline-block;
+  width: 110px;
+  height: 55px;
+  margin-top: 40px;
+  background-color: #fad312;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: none;
+  border: none;
+  font-size: 18px;
+}
+p.list__warning {
+  font-size: 16px;
+  margin: 0;
+}
+footer {
+  background-color: #000;
+  /* height: 60px; */
+  color: #999;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 480px){
+  .wrap {
+    margin: auto;
+  }
+  .list__intro {
+    text-align: center;
+  }
+  .list__intro span {
+    display: none;
+  }
+  .list__content > label:not(.other):before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 30px;
+    margin-right: 6px;
+    vertical-align: middle;
+    background-color: red;
+  }
+  div.list__content > label:not(.other):after {
+    content: "(必填)";
+    display: inline-block;
+    color: #aaa;
+    margin-right: 6px;
+    font-size: 16px;
+
+  }
+  .list__content > input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    border: solid 2px #eee;
+  }
+  .list__content > label:not(.other):after {
+    content: "";
+  }
+  .list__warning {
+    text-align: center;
+  }
+}
