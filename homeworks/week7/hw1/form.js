@@ -22,11 +22,6 @@ function isFilled() {
     hasfilled = true;
     return hasfilled;
   }
-  const mutichoice = document.querySelector('.mutichoice');
-  if (!(mutichoice.value) && !(mutichoice.classList.contains('unfilled_blank'))) {
-    mutichoice.insertAdjacentHTML('afterend', '<div class="unfilled_warning">資料不可空白</div>');
-    mutichoice.classList.add('unfilled_blank');
-  }
   return hasfilled;
 }
 
@@ -39,7 +34,8 @@ document.querySelector('form').addEventListener('submit', (e) => {
       }
     });
     const mutichoice = document.querySelector('.mutichoice');
-    if (!(mutichoice.value) && !(mutichoice.classList.contains('unfilled_blank'))) {
+    const mutiStatus = (mutichoice.querySelector('#gameType01').checked || mutichoice.querySelector('#gameType02').checked);
+    if (!(mutiStatus) && !(mutichoice.classList.contains('unfilled_blank'))) {
       mutichoice.nextElementSibling.classList.remove('hidden');
       mutichoice.classList.add('unfilled_blank');
     }
