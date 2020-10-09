@@ -10,5 +10,14 @@
 </head>
 <body>
   <h1>標題</h1>
+<?php
+  $comments = array();
+  array_push($comments, array(
+    "id" => "小明",
+    "username" => "小明",
+    "nickname" => "還是小明",
+  ));
+  echo 123;
+?>
 </body>
 </html>
