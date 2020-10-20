@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TodoList</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+  <style>
+    p {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+    .card {
+      margin: 60px auto;
+      position: relative;
+    }
+    .input {
+      width: 100%;
+      border: none;
+      margin: 0;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+      font-size: 20px;
+      padding: 20px;
+    }
+    .input::placeholder {
+      color: #bbb;
+    }
+    .card-header {
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .list-group-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      font-size: 10px;
+    }
+    .btn + .btn {
+      margin-left: 15px;
+    }
+    .card_item.active {
+      background-color: #caedd1;
+      color: #666;
+    }
+    .card_item.active p {
+      text-decoration: line-through;
+    }
+    .filter_btn {
+      background-color: #fff;
+      color: #222;
+      border-radius: 0px;
+      margin: 10px;
+    }
+    .filter_btn_wrap {
+      margin: auto;
+    }
+    .filter_btn_wrap .filter_items {
+      font-size: 10px;
+      white-space: nowrap;
+      position: absolute;
+      left: 20px;
+      bottom: 5px;
+      color: #aaa;
+    }
+    .filter_btn_group {
+      width: 80%;
+      margin: 5px;
+    }
+    .filter_delete_btn {
+      font-size: 10px;
+      white-space: nowrap;
+      position: absolute;
+      right: 20px;
+      bottom: 5px;
+      color: #aaa;
+    }
+    .filter_delete_btn:hover {
+      cursor: pointer;
+      color: #222;
+    }
+    .save_btn_wrap {
+      margin: auto;
+      text-align: right;
+      margin-top: -40px;
+    }
+    .id_form {
+      display: flex;
+      /* justify-content: space-between; */
+      align-items: center;
+      padding: 20px;
+    }
+    .id_form * {
+      margin-right: 20px;
+    }
+    .confirm_id_btn {
+      margin: 0!important;
+    }
+    .guide_wrap {
+      margin: auto;
+      text-align: center;
+      color: #ccc;
+      margin-top: 60px;
+    }
+
+  </style>
+</head>
+<body>
+    <div class="card" style="width: 46rem;">
+      <form class="form-inline id_form">
+        <label for="">My Todo List: </label>
+        <input type="text" class="form-control" id="inputID" placeholder="ID Number">
+        <button type="submit" class="btn btn-primary mb-2 confirm_id_btn">Confirm</button>
+      </form>
+    </div>
+    <div class="card" style="width: 46rem;">
+        <div class="card-header">
+          <input class="input" type="text" placeholder="What need to be done?">
+        </div>
+        <ul class="list-group list-group-flush card_group">
+        </ul>
+        <div class="filter_btn_wrap">
+            <p class="filter_items"><span>0</span> items left</p>
+            <div class="btn-group filter_btn_group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary filter_btn" data-status="all">All</button>
+                <button type="button" class="btn btn-secondary filter_btn" data-status="active">Active</button>
+                <button type="button" class="btn btn-secondary filter_btn" data-status="complete">Complete</button>
+            </div>
+            <p class="filter_delete_btn">delete completed items</p>
+        </div>
+      </div>
+      <div class="save_btn_wrap" style="width: 46rem;">
+          <div class="card_btn">
+              <button type="button" class="btn btn-outline-success save_btn">SAVE</button>
+          </div>
+      </div>
+      <div class="guide_wrap" style="width: 46rem;">
+        <p>ID Number 載入已存取的 List</p>
+        <p>Enter 可直接新增 List 內容</p>
+        <p>Double Click 可編輯內容</p>
+        <p>Save 可存取內容</p>
+      </div>
+
+</body>
+<script>
+  let items = 0;
+  function encodeHtml(unsafe) {
+    return unsafe
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+  }
+  function saveList(arr){
+    $.ajax({
+      method: "POST",
+      url: 'http://localhost:8080/week12/hw2/handle_save.php',
+      data: {
+        // 這邊的 arr 沒有做 JSON.stringify(arr) 有差別嗎？老師參考範例影片裡面有，但是我實作的時候沒有好像也可以存？
+        // 是因為我存的是資料，但是老師存的是整個陣列所以要轉成字串嗎？
+        todoList: arr
+      }
+    })
+    .done(function(res) {
+      alert("請記住您的 List ID：" + res.listId)
+      getListFromServer(res.listId);
+      $('#inputID').val(res.listId);
+    })
+  }
+  
+  function createCard(content, parentDom, status = "active") {
+    let className = null;
+    if(status === 'complete'){
+      className = 'active'
+    }
+    let addCard = `
+        <li class="list-group-item card_item ${className}">
+            <p>${encodeHtml(content)}</p>
+            <div class="card_btn">
+                <button type="button" class="btn btn-outline-success complete_btn ${className}">Complete</button>
+                <button type="button" class="btn btn-outline-dark delete_btn">X</button>
+            </div>
+        </li>
+            `;
+    $(parentDom).append(addCard);
+  }
+
+  function getListFromServer(id){
+    $.ajax({
+      method: "GET",
+      url: `http://localhost:8080/week12/hw2/api_getList.php?id=${id}`,
+    })
+    .done(function(res) {
+      if(!(res.status >= 200 && res.status < 300)) {
+        alert('查無此 ID');
+        return;
+      }
+      $('.list-group').empty();
+      for(let i = 0; i < res.listArr.length; i += 1){
+        // console.log(res.listArr[i])
+        let listContent = res.listArr[i][0];
+        let listStatus = res.listArr[i][1];
+        createCard(listContent, '.list-group', listStatus)
+        items = countItems();
+        $('.filter_items span').text(items);
+      }
+    })
+    .fail(function(res){
+      alert('系統不穩，請稍後再試');
+    })
+  }
+
+  function getListFromClien(){
+    let listArr = [];
+    $('li.card_item').each(function(i, el){
+      let arr = []
+      arr.push($(el.querySelector('p')).text());
+      if($(el.querySelector('.complete_btn')).hasClass('active')){
+        arr.push('complete');
+      }else {
+        arr.push('active');
+      }
+      listArr.push(arr);
+    })
+    return listArr
+  }
+
+  function countItems() {
+    let items = 0
+    $('.card_item').each(function(i, el){
+      if(!$(el).hasClass('active')){
+        items += 1;
+      }
+    })
+    return items
+  }
+
+  $(document).on('keypress',function(e) {
+    let content = $('.input').val();
+    if(e.which == 13){
+      if(!content){
+        return
+      }
+      createCard(content, '.list-group')
+      
+      if(filterStatus === 'complete'){
+        $("button[data-status='complete']").click();
+      }
+      $('.input').val('');
+      items = countItems();
+      $('.filter_items span').text(items);
+    }
+  });
+
+  // 這邊想要做滑鼠雙擊後可以編輯，但是不知道為什麼 dblclick 無作用
+  let hasClick = 0
+  document.querySelector('.card_group').addEventListener('click', function(e){
+    hasClick = hasClick + 1
+    if(hasClick === 1){
+      setTimeout(() => {
+        hasClick = 0
+      }, 500);
+    }
+    if(hasClick === 2){
+      function eddition(Node){
+        let getContent = Node.innerText
+        Node.outerHTML = `<input class="tem_input" value="${getContent}">`
+        // 按 enter 結束編輯狀態
+        $(document).on('keypress',function(e) {
+          if(e.which == 13){
+            document.querySelectorAll('input.tem_input').forEach((el) => {
+                let getNewContent = el.value
+                el.outerHTML = `<p>${getNewContent}</p>`
+            })
+          }
+        })
+        // 鼠標按一下 body 結束編輯狀態
+        $('body').on('click',function(e) {
+          document.querySelectorAll('input.tem_input').forEach((el) => {
+            let getNewContent = el.value
+            if(e.target.nodeName === 'BODY'){
+              el.outerHTML = `<p>${getNewContent}</p>`
+            }
+          })
+        })
+      }
+
+      if(e.target.classList.contains('card_item')){
+        let getNode = e.target.querySelector('p')
+        eddition(getNode)
+      }
+      if(e.target.parentNode.classList.contains('card_item')){
+        let getNode = e.target
+        eddition(getNode)
+      }
+      hasClick = 0
+    }
+    if(hasClick > 2){
+      hasClick = 0
+    }
+  })
+
+  let filterStatus = 'all';
+
+  $('.card_group').on('click', '.delete_btn', function(e){
+    // 這邊不知道用 jQuery 的話要怎麼用，用 $(e).parent().parent() 找不到該 node
+    e.target.parentNode.parentNode.remove();
+    if(!e.target.parentNode.parentNode.classList.contains('active')){
+      items -= 1;
+      $('.filter_items span').text(items);
+    }
+  })
+  $('.card_group').on('click', '.complete_btn', function(e){
+    e.target.classList.toggle('active');
+    e.target.parentNode.parentNode.classList.toggle('active');
+    if (e.target.classList.contains('active')){
+      items -= 1;
+    } else {
+      items += 1;
+    }
+    $('.filter_items span').text(items);
+  })
+
+  $('.filter_delete_btn').on('click', function(e){
+    $( ".card_item" ).filter( ".active" ).remove();
+  })
+
+  $('.filter_btn').on('click', function(e){
+    if(e.target.innerText === 'Complete'){
+      $(e.target).siblings().removeClass('active');
+      $(e.target).toggleClass('active');
+      filterStatus = 'complete';
+      $('.card_item').hide();
+      $( ".card_item" ).filter( ".active" ).show();
+    }
+    if(e.target.innerText === 'Active'){
+      $(e.target).siblings().removeClass('active');
+      $(e.target).toggleClass('active');
+      filterStatus = 'active';
+      $('.card_item').show();
+      $( ".card_item" ).filter( ".active" ).hide();
+    }
+    if(e.target.innerText === 'All'){
+      $(e.target).siblings().removeClass('active');
+      $(e.target).toggleClass('active');
+      filterStatus = 'all';
+      $('.card_item').show();
+    }
+  })
+
+  $('.save_btn').on('click', function(e){
+    e.preventDefault();
+    let listArr = getListFromClien();
+    saveList(listArr);
+  })
+
+  $('.id_form').on('submit', function(e){
+    e.preventDefault();
+    let id = $('#inputID').val();
+    if(id <= 0 || !Number(id)){
+      alert('請輸入正確 ID');
+      return
+    }
+    getListFromServer(id);
+  })
+
+</script>
+</html>
